@@ -37,28 +37,37 @@ public class UnityARFaceAnchorManager : MonoBehaviour {
 
 	void FaceAdded (ARFaceAnchor anchorData)
 	{
-		anchorPrefab.transform.position = UnityARMatrixOps.GetPosition (anchorData.transform);
-		anchorPrefab.transform.rotation = UnityARMatrixOps.GetRotation (anchorData.transform);
-		anchorPrefab.SetActive (true);
+		if (anchorPrefab != null)
+		{
+			anchorPrefab.transform.position = UnityARMatrixOps.GetPosition(anchorData.transform);
+			anchorPrefab.transform.rotation = UnityARMatrixOps.GetRotation(anchorData.transform);
+			anchorPrefab.SetActive(true);
+		}
 	}
 
 	void FaceUpdated (ARFaceAnchor anchorData)
 	{
-		if (anchorPrefab.activeSelf != anchorData.isTracked) 
+		if (anchorPrefab != null)
 		{
-			anchorPrefab.SetActive (anchorData.isTracked);
-		}
+			if (anchorPrefab.activeSelf != anchorData.isTracked) 
+			{
+				anchorPrefab.SetActive (anchorData.isTracked);
+			}
 
-		if (anchorData.isTracked) 
-		{
-			anchorPrefab.transform.position = UnityARMatrixOps.GetPosition (anchorData.transform);
-			anchorPrefab.transform.rotation = UnityARMatrixOps.GetRotation (anchorData.transform);
+			if (anchorData.isTracked) 
+			{
+				anchorPrefab.transform.position = UnityARMatrixOps.GetPosition (anchorData.transform);
+				anchorPrefab.transform.rotation = UnityARMatrixOps.GetRotation (anchorData.transform);
+			}
 		}
 	}
 
 	void FaceRemoved (ARFaceAnchor anchorData)
 	{
-		anchorPrefab.SetActive (false);
+		if (anchorPrefab != null)
+		{
+			anchorPrefab.SetActive(false);
+		}
 	}
 
 

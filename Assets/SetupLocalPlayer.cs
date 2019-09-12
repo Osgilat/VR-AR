@@ -67,7 +67,7 @@ public class SetupLocalPlayer : NetworkBehaviour
         if (isLocalPlayer && Application.isMobilePlatform)
         {
             Debug.Log("LOCAL PLAYER SPAWNED");
-            //UnityARFaceAnchorManager.instance.anchorPrefab = gameObject;
+            UnityARFaceAnchorManager.instance.anchorPrefab = gameObject;
             blendshapeDriver.enabled = true;
             InvokeRepeating("UpdateBlendshapes",5, 0.05f);
         }
