@@ -36,7 +36,7 @@ public class SetupLocalPlayer : NetworkBehaviour
     
     private void OnGUI() // OnGUI is called twice per frame
     {
-        GUI.Label(new Rect(50, 50, 100, 25), vrInitialized ? "VR MODE" : "IOS MODE");
+        GUI.Label(new Rect(50, 50, 100, 25), !Application.isMobilePlatform ? "VR MODE" : "IOS MODE");
     }
     
     // Start is called before the first frame update

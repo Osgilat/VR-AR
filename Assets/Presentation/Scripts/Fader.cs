@@ -18,6 +18,9 @@ public class Fader : NetworkBehaviour
     private GameObject slideObj;
     SpriteRenderer rendy1;
 
+    public GameObject nextSlideButton;
+    public GameObject previousSlideButton;
+    
     // Use this for initialization
     void Start()
     {
@@ -31,12 +34,6 @@ public class Fader : NetworkBehaviour
                 sprites.Add(spriteList[i].name, spriteList[i]);
             }
         }
-
-        /*
-        slideObj = new GameObject();
-        slideObj.transform.position = new Vector3(0, 0, 2f);
-        rendy1 = slideObj.AddComponent<SpriteRenderer>();
-        */
         
         slideObj = slideGameobject;
         rendy1 = slideObj.GetComponent<SpriteRenderer>();
@@ -45,6 +42,10 @@ public class Fader : NetworkBehaviour
         rendy1.sprite = sprites[spriteKey];
 
         currentSlide = 0;
+        
+        
+        
+        
     }
 
     [SyncVar(hook = nameof(OnSlideChanged))]
@@ -101,24 +102,20 @@ public class Fader : NetworkBehaviour
 
     public bool badBoolPrev = false;
 
-
+    public bool badBoolShowInterface = false;
+    
+    
     void Update()
     {
-        if (SetupLocalPlayer.vrInitialized && !Application.isMobilePlatform)
+        if (Application.isMobilePlatform || badBoolShowInterface)
         {
-            if (SteamVR_Actions._default.GrabPinch.GetLastStateDown(SteamVR_Input_Sources.RightHand))
-            {
-                CmdToNextSlide();
-
-                return;
-            }
-
-            if (SteamVR_Actions._default.GrabPinch.GetLastStateDown(SteamVR_Input_Sources.LeftHand))
-            {
-                CmdToPreviousSlide();
-
-                return;
-            }
+            nextSlideButton.SetActive(currentSlide < (sprites.Keys.Count - 1));
+            previousSlideButton.SetActive(currentSlide > 0);
+        }
+        else
+        {
+            nextSlideButton.SetActive(false);
+            previousSlideButton.SetActive(false);
         }
         
         if (badBoolNext)
