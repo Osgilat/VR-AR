@@ -33,6 +33,8 @@ public class SetupLocalPlayer : NetworkBehaviour
     public SteamVR_Behaviour_Pose rightHand;
     public ViveCursor viveCursor;
     
+    public Animator animator;
+    
     
     private void OnGUI() // OnGUI is called twice per frame
     {
@@ -42,6 +44,8 @@ public class SetupLocalPlayer : NetworkBehaviour
     // Start is called before the first frame update
     void Start()
     {
+    
+        animator = GetComponent<Animator>();
         
         if (Application.isMobilePlatform && isLocalPlayer || !Application.isMobilePlatform && !isLocalPlayer)
         {
