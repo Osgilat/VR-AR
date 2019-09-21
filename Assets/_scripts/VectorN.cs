@@ -4,16 +4,14 @@ using System.Collections;
 using Object = UnityEngine.Object;
 
 [Serializable]
-public class VectorN : Object {
+public class VectorN : MonoBehaviour {
  
-    public int Length; //Size
     public float[] values;
  
     /*-$-$-$-$-$-$-$-$-CONSTRUCTORS & INDEXERS-$-$-$-$-$-$-$-$-*/
  
     public VectorN(int size){
-        this.Length = size;
-        this.values = new float[Length];
+        this.values = new float[size];
     }
  
     public float this[int i] //Be careful this does not look for errors
@@ -31,7 +29,7 @@ public class VectorN : Object {
     /*-$-$-$-$-$-$-$-$-METHODS-$-$-$-$-$-$-$-$-*/
  
     public void print(){
-        for ( int i = 0; i < Length; i++){
+        for ( int i = 0; i < values.Length; i++){
             Debug.Log(i+" -> "+values[i]);
         }
     }
@@ -41,12 +39,13 @@ public class VectorN : Object {
     }
    
     public static float ScalarProduct(VectorN v1, VectorN v2){
-        if ( v1.Length == v2.Length ){
+        
+        if ( v1.values.Length == v2.values.Length ){
             float sum = 0;
-            for ( int i = 0; i < v1.Length; i++){
+            for ( int i = 0; i < v1.values.Length; i++){
                 sum += v1[i]*v2[i];
             }
-            Debug.Log(sum);
+            //Debug.Log(sum);
             return sum;
         }
         else{
@@ -65,9 +64,9 @@ public class VectorN : Object {
     /*-$-$-$-$-$-$-$-$-OPERATORS-$-$-$-$-$-$-$-$-*/
  
     public static VectorN operator +(VectorN v1, VectorN v2){
-        if ( v1.Length == v2.Length ) {
-            VectorN v = new VectorN(v1.Length);
-            for ( int i = 0; i < v1.Length; i++){
+        if ( v1.values.Length == v2.values.Length ) {
+            VectorN v = new VectorN(v1.values.Length);
+            for ( int i = 0; i < v1.values.Length; i++){
                 v[i] = v1[i] + v2[i];
             }
             return v;
@@ -78,9 +77,9 @@ public class VectorN : Object {
     }
  
     public static VectorN operator -(VectorN v1, VectorN v2){
-        if ( v1.Length == v2.Length ) {
-            VectorN v = new VectorN(v1.Length);
-            for ( int i = 0; i < v1.Length; i++){
+        if ( v1.values.Length == v2.values.Length ) {
+            VectorN v = new VectorN(v1.values.Length);
+            for ( int i = 0; i < v1.values.Length; i++){
                 v[i] = v1[i] - v2[i];
             }
             return v;
@@ -91,15 +90,15 @@ public class VectorN : Object {
     }
  
     public static VectorN operator *(VectorN v1, float f){
-        VectorN v = new VectorN(v1.Length);
-        for ( int i = 0; i < v1.Length; i++){
+        VectorN v = new VectorN(v1.values.Length);
+        for ( int i = 0; i < v1.values.Length; i++){
             v[i] = v1[i]*f;
         }
         return v;
     }
     public static VectorN operator *(float f, VectorN v1){
-        VectorN v = new VectorN(v1.Length);
-        for ( int i = 0; i < v1.Length; i++){
+        VectorN v = new VectorN(v1.values.Length);
+        for ( int i = 0; i < v1.values.Length; i++){
             v[i] = v1[i]*f;
         }
         return v;
@@ -107,8 +106,8 @@ public class VectorN : Object {
    
     public static VectorN operator /(VectorN v1, float f){
         if ( f != 0 ){
-            VectorN v = new VectorN(v1.Length);
-            for ( int i = 0; i < v1.Length; i++){
+            VectorN v = new VectorN(v1.values.Length);
+            for ( int i = 0; i < v1.values.Length; i++){
                 v[i] = v1[i]/f;
             }
             return v;
@@ -119,8 +118,8 @@ public class VectorN : Object {
     }
  
     public static bool operator == (VectorN v1, VectorN v2){
-        if ( v1.Length == v2.Length){
-            for ( int i = 0; i < v1.Length; i++){
+        if ( v1.values.Length == v2.values.Length){
+            for ( int i = 0; i < v1.values.Length; i++){
                 if ( v1[i] != v2[i] ){
                     return false;
                 }
@@ -133,8 +132,8 @@ public class VectorN : Object {
     }
  
     public static bool operator != (VectorN v1, VectorN v2){
-        if ( v1.Length == v2.Length){
-            for ( int i = 0; i < v1.Length; i++){
+        if ( v1.values.Length == v2.values.Length){
+            for ( int i = 0; i < v1.values.Length; i++){
                 if ( v1[i] != v2[i] ){
                     return true;
                 }

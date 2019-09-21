@@ -4,13 +4,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Networking;
+using Valve.Newtonsoft.Json.Utilities;
 using Valve.VR;
 
 public class SetupLocalPlayer : NetworkBehaviour
 {
     public BlendshapeDriver blendshapeDriver;
 
-    public SkinnedMeshRenderer skinnedMeshRenderer;
+    public SkinnedMeshRenderer possesableMesh;
+    public SkinnedMeshRenderer imitatedMesh;
 
 
     public Vector3 offset = new Vector3(0, 0.5f, 0.4f);
@@ -69,7 +71,8 @@ public class SetupLocalPlayer : NetworkBehaviour
             
         }
         
-        if (isLocalPlayer && Application.isMobilePlatform)
+        if (isLocalPlayer && Application.isMobilePlatform
+            )
         {
             Debug.Log("LOCAL PLAYER SPAWNED");
             UnityARFaceAnchorManager.instance.anchorPrefab = gameObject;
@@ -87,14 +90,45 @@ public class SetupLocalPlayer : NetworkBehaviour
             syncListFloat.Add(0);
         }
         
+        myVector = gameObject.AddComponent<VectorN>();
+        myVector.values = new float[52];
     }
 
     
-    public VectorN scared = new VectorN(52);
     
-   
+    public VectorN myVector;
+    
+    [SerializeField]
+    List<VectorN> expressions = new List<VectorN>();
+
+    public VectorN mostLikelyExpression;
+    
+    public float[] expressionLikeness;
+
+    public int mostLikelyIndex;
+
+    public void FixedUpdate()
+    {
+        if (imitatedMesh.gameObject.activeInHierarchy)
+        {
+            for (int i = 0; i < expressions.Count; i++)
+            {
+                float normalized = (Mathf.Sqrt(myVector.norme()) * Mathf.Sqrt(expressions[i].norme()));
+                
+                expressionLikeness[i] = VectorN.ScalarProduct(expressions[i], myVector) / normalized;
+            }
+    
+            mostLikelyIndex = expressionLikeness.ToList().IndexOf(expressionLikeness.Max());
+            
+            mostLikelyExpression = expressions[mostLikelyIndex];
+    
+            SetImitationBlendshapes();
+        }
+    }
+    
     public void UpdateBlendshapes()
     {
+       
         
         if (isServer)
         {
@@ -110,11 +144,21 @@ public class SetupLocalPlayer : NetworkBehaviour
             
             CmdGetBlendShapes(clientsWeights);
         }
+
+
         
-       
+        
     }
     
-    
+    public void SetImitationBlendshapes()
+    {
+        
+        for (int i = 0; i < 52; i++)
+        {
+            imitatedMesh.SetBlendShapeWeight(i,mostLikelyExpression[i]* expressionLikeness[mostLikelyIndex]) ;
+        }
+ 
+    }
     
     private void Update()
     {
@@ -158,9 +202,8 @@ public class SetupLocalPlayer : NetworkBehaviour
         for (int i = 0; i < 52; i++)
         {
             
-            syncListFloat[i] = skinnedMeshRenderer.GetBlendShapeWeight(i);
+            syncListFloat[i] = possesableMesh.GetBlendShapeWeight(i);
         }
-   
     }
 
     [Command]
@@ -184,7 +227,8 @@ public class SetupLocalPlayer : NetworkBehaviour
         
         for (int i = 0; i < 52; i++)
         {
-             skinnedMeshRenderer.SetBlendShapeWeight(i,syncListFloat[i]);
+             possesableMesh.SetBlendShapeWeight(i,syncListFloat[i]);
+             myVector.values[i] = possesableMesh.GetBlendShapeWeight(i);
         }
  
     }
