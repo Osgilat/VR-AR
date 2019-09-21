@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -89,6 +90,9 @@ public class SetupLocalPlayer : NetworkBehaviour
     }
 
     
+    public VectorN scared = new VectorN(52);
+    
+   
     public void UpdateBlendshapes()
     {
         
@@ -98,7 +102,7 @@ public class SetupLocalPlayer : NetworkBehaviour
         }
         else
         {
-            float[] clientsWeights = new float[52]; // = new List<float>();
+            float[] clientsWeights = new float[52]; 
 
             GetBlendshapes();
  

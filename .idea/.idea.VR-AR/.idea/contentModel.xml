@@ -12,6 +12,7 @@
           <e p="AudioSync.cs" t="Include" />
           <e p="LoggingDemo.cs" t="Include" />
           <e p="LoggingSystem.cs" t="Include" />
+          <e p="VectorN.cs" t="Include" />
         </e>
         <e p="AnimatorController.cs" t="Include" />
         <e p="BlendshapeActivation.cs" t="Include" />

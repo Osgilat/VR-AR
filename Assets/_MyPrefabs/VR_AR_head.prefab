@@ -745,6 +745,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayFor: 1
+  printVals: 0
+  state: 
 --- !u!1 &2245418279886724363
 GameObject:
   m_ObjectHideFlags: 0
@@ -760,7 +762,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2137892955033576325
 Transform:
   m_ObjectHideFlags: 0
@@ -1205,6 +1207,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   delayFor: 1
+  printVals: 0
+  state: 
 --- !u!95 &1403967905801418376
 Animator:
   serializedVersion: 3

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.XR.iOS;
 using Random = System.Random;
@@ -44,9 +45,43 @@ public class BlendshapeDriver : MonoBehaviour
 	public float delayFor = 1.0f;
 	private float delayTimer = 0;
 
+	public bool printVals;
+
+	public string state;
+
+	
+	public string [] GetBlendshapesWeights (GameObject obj)
+	{
+		SkinnedMeshRenderer head = obj.GetComponent<SkinnedMeshRenderer>();
+		
+		string[] arr;
+		arr = new string [52];
+		for (int i = 0; i < 52; i++)
+		{
+			string s = head.GetBlendShapeWeight(i) + "";
+			//print("Blend Shape: " + i + " " + s); // Blend Shape: 4 FightingLlamaStance
+			arr[i] = s;
+		}
+		return arr;
+	}
+	
+	
 	// Update is called once per frame
 	void Update()
 	{
+		if (printVals)
+		{
+			printVals = false;
+
+			string temp = "";
+			
+			foreach(string str in GetBlendshapesWeights(gameObject).ToList())
+			{
+				temp += str + ","; //maybe also + '\n' to put them on their own line.
+			}
+			Debug.Log( state + "\n" + temp);
+		}
+		
 		if (currentBlendShapes != null)
 		{
 			foreach (KeyValuePair<string, float> kvp in currentBlendShapes)
