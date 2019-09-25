@@ -89,12 +89,15 @@ public class Fader : NetworkBehaviour
         ChangeSlide();
     }
 
-    
+    public AudioSync audioSync;
     public void ChangeSlide()
     {
         currentSlide = Mathf.Clamp(currentSlide, 0, sprites.Keys.Count - 1);
         string spriteKey = Enumerable.ToList(sprites.Keys)[currentSlide];
         rendy1.sprite = sprites[spriteKey];
+        
+        audioSync.PlayAudioMessageForSlide(currentSlide);
+        
         //image.sprite = sprites[spriteKey];
     }
     

@@ -92,8 +92,8 @@ public class BlendshapeDriver : MonoBehaviour
 						
 						"BS_node." + kvp.Key.Replace("_L", "Left").Replace("_R", "Right"));
 				
-					Debug.Log("Trying " + kvp.Key);
-					Debug.Log("Trying2 " + "BS_node." + kvp.Key.Replace("_L", "Left").Replace("_R", "Right"));
+					//Debug.Log("Trying " + kvp.Key);
+					//Debug.Log("Trying2 " + "BS_node." + kvp.Key.Replace("_L", "Left").Replace("_R", "Right"));
 				if (blendShapeIndex >= 0)
 				{
 					skinnedMeshRenderer.SetBlendShapeWeight(blendShapeIndex, kvp.Value * 100.0f);

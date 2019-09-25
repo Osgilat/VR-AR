@@ -57,7 +57,8 @@ public class UnityFileDebug : MonoBehaviour
     void HandleLog(string logString, string stackTrace, LogType type)
     {
         //... same as above
-        //if(type == LogType.Error)
+        if(!logString.Contains("audio listeners"))
+        //if(type == LogType.Log)
         {
             fileWriter.Write((count == 0 ? "" : logString + "\n"));
            // Debug.Log(logString);

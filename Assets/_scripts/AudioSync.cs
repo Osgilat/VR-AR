@@ -11,6 +11,8 @@ public class AudioSync : NetworkBehaviour {
 	//Clips to sync
 	public AudioClip[] clips;
 
+	public AudioClip[] audioMessages; 
+	
 	//Use gameobject's audio source
 	private AudioSource source;
 
@@ -19,33 +21,38 @@ public class AudioSync : NetworkBehaviour {
 		source = this.GetComponent<AudioSource> ();
 	}
 
+	public int lastSlideIndex = 0;
+	
+	public void PlayAudioMessageForSlide(int slideNumber)
+	{
+		lastSlideIndex = slideNumber;
+		PlayLocalSound(slideNumber);
+	}
+	
 	private void Update()
 	{
 		
 		if (SetupLocalPlayer.vrInitialized && !Application.isMobilePlatform)
 		{
 			
-			Debug.Log("SOUND TRY");
-			
 			if (SteamVR_Actions._default.GrabPinch.GetLastStateDown(SteamVR_Input_Sources.RightHand))
 			{
-				PlaySound(0);
+				//PlaySound(0);
 
-				Debug.Log("LIKE SOUND");
+				Debug.Log("Right trigger pressed SlideIndex=" + lastSlideIndex + ",AudioTime=" + source.time);
 
 				return;
 			}
 
 			if (SteamVR_Actions._default.GrabPinch.GetLastStateDown(SteamVR_Input_Sources.LeftHand))
 			{
-				PlaySound(1);
+				//PlaySound(1);
 				
-				Debug.Log("DISLIKE SOUND");
+				Debug.Log("Left trigger pressed SlideIndex=" + lastSlideIndex + ",AudioTime=" + source.time);
 
 				return;
 			}
 		}
-
 	}
 
 	//Play clip from array, sending it to a server
@@ -59,7 +66,9 @@ public class AudioSync : NetworkBehaviour {
     public void PlayLocalSound(int id) {
         if (id >= 0 && id < clips.Length)
         {
-            source.PlayOneShot(clips[id]);
+	        source.Stop();
+	        source.clip = clips[id];
+            source.Play();
         }
     }
 

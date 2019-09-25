@@ -1366,6 +1366,7 @@ MonoBehaviour:
   previousSlideButton: {fileID: 1980289835}
   currentSlide: 0
   image: {fileID: 0}
+  audioSync: {fileID: 1500568787}
   badBoolNext: 0
   badBoolPrev: 0
   badBoolShowInterface: 0
@@ -1731,6 +1732,10 @@ MonoBehaviour:
   clips:
   - {fileID: 8300000, guid: 8753ea650bd618149997a2f7f87378a6, type: 3}
   - {fileID: 8300000, guid: 41932fdd0443e784eb873f43aa4a2983, type: 3}
+  audioMessages:
+  - {fileID: 8300000, guid: 41932fdd0443e784eb873f43aa4a2983, type: 3}
+  - {fileID: 8300000, guid: 8753ea650bd618149997a2f7f87378a6, type: 3}
+  lastSlideIndex: 0
 --- !u!114 &1500568788
 MonoBehaviour:
   m_ObjectHideFlags: 0
