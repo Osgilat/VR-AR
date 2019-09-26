@@ -6,6 +6,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using Valve.Newtonsoft.Json.Utilities;
 using Valve.VR;
+using Random = UnityEngine.Random;
 
 public class SetupLocalPlayer : NetworkBehaviour
 {
@@ -92,6 +93,8 @@ public class SetupLocalPlayer : NetworkBehaviour
         
         myVector = gameObject.AddComponent<VectorN>();
         myVector.values = new float[52];
+        
+        InvokeRepeating("MasksImitationLoop", 1.0f, 1.0f);
     }
 
     
@@ -107,29 +110,106 @@ public class SetupLocalPlayer : NetworkBehaviour
 
     public int mostLikelyIndex;
 
-    public void FixedUpdate()
+    [Serializable]
+    public class ExpressionProbability
     {
-        if (imitatedMesh.gameObject.activeInHierarchy)
+        public float[] probabilityArray = new float[8];
+        
+        /*
+        public float angry;
+        public float fear;
+        public float sad;
+        public float bored;
+        public float happy;
+        public float exited;
+        */
+    }
+
+    public List<string> animatorTriggersList = new List<string>();
+    
+    public List<ExpressionProbability> expressionProbabilities = new List<ExpressionProbability>();
+    
+    public int GetRandomWeightedIndex(float[] weights)
+    {
+        if(weights == null || weights.Length == 0) return -1;
+ 
+        float w;
+        float total = 0;
+        int i;
+        for(i = 0; i < weights.Length; i++)
         {
-            for (int i = 0; i < expressions.Count; i++)
+            w = weights[i];
+            if (float.IsInfinity(w))
             {
-                float normalized = (Mathf.Sqrt(myVector.norme()) * Mathf.Sqrt(expressions[i].norme()));
-                
-                expressionLikeness[i] = VectorN.ScalarProduct(expressions[i], myVector) / normalized;
+                return i;
             }
-    
-            mostLikelyIndex = expressionLikeness.ToList().IndexOf(expressionLikeness.Max());
-            
-            mostLikelyExpression = expressions[mostLikelyIndex];
-    
-            SetImitationBlendshapes();
+            else if (w >= 0f && !float.IsNaN(w))
+            {
+                total += weights[i];
+            }
         }
+ 
+        float r = Random.value;
+        float s = 0f;
+
+        for(i = 0; i < weights.Length; i++)
+        {
+            w = weights[i];
+            if (float.IsNaN(w) || w <= 0f) continue;
+     
+            s += w / total;
+            if (s >= r) return i;
+        }
+ 
+        return -1;
+    }
+
+    public Animator imitatedAnimator;
+    public Animator aiAnimator;
+
+    public int lastPickedEmotionIndexImitation = -1;
+    public int lastPickedEmotionIndexAi = -1;
+    
+    public void MasksImitationLoop()
+    {
+        if (!imitatedMesh.gameObject.activeInHierarchy) return;
+        
+        
+        for (int i = 0; i < expressions.Count; i++)
+        {
+            float normalized = (Mathf.Sqrt(myVector.norme()) * Mathf.Sqrt(expressions[i].norme()));
+                
+            expressionLikeness[i] = VectorN.ScalarProduct(expressions[i], myVector) / normalized;
+        }
+    
+        mostLikelyIndex = expressionLikeness.ToList().IndexOf(expressionLikeness.Max());
+            
+        //mostLikelyExpression = expressions[mostLikelyIndex];
+    
+        //SetImitationBlendshapes();
+        
+        if (AudioSync.currentSlideIndex > 0 && lastPickedEmotionIndexImitation != mostLikelyIndex)
+        {
+            lastPickedEmotionIndexImitation = mostLikelyIndex;
+            imitatedAnimator.SetTrigger(animatorTriggersList[mostLikelyIndex]);
+        }
+        
+        
+        if (!aiAnimator.gameObject.activeInHierarchy) return;
+
+        int pickedEmotionIndex = GetRandomWeightedIndex(expressionProbabilities[AudioSync.currentSlideIndex].probabilityArray);
+
+        if (AudioSync.currentSlideIndex > 0 && lastPickedEmotionIndexAi != pickedEmotionIndex)
+        {
+            lastPickedEmotionIndexAi = pickedEmotionIndex;
+            aiAnimator.SetTrigger(animatorTriggersList[pickedEmotionIndex]);
+        }
+        
+        
     }
     
     public void UpdateBlendshapes()
     {
-       
-        
         if (isServer)
         {
             GetBlendshapes();
@@ -155,7 +235,7 @@ public class SetupLocalPlayer : NetworkBehaviour
         
         for (int i = 0; i < 52; i++)
         {
-            imitatedMesh.SetBlendShapeWeight(i,mostLikelyExpression[i]* expressionLikeness[mostLikelyIndex]) ;
+            imitatedMesh.SetBlendShapeWeight(i,mostLikelyExpression[i] * expressionLikeness[mostLikelyIndex]) ;
         }
  
     }

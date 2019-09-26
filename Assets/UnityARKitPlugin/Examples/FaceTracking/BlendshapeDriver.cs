@@ -117,6 +117,8 @@ public class BlendshapeDriver : MonoBehaviour
 		}
 	}
 
+	public string maskType;
+	
 	void LogExpressions()
 	{
 		foreach (KeyValuePair<string, float> kvp in currentBlendShapes)
@@ -126,7 +128,7 @@ public class BlendshapeDriver : MonoBehaviour
 
 			Debug.Log(DateTime.Now.ToString("M/d/yyyy") + " "
 			                                            + System.DateTime.Now.ToString("HH:mm:ss") + ":"
-			                                            + System.DateTime.Now.Millisecond + "," + stringToLog);
+			                                            + System.DateTime.Now.Millisecond + "," + maskType + "," + stringToLog + "," + AudioSync.instance.GetLogString());
 		}
 	}
 }

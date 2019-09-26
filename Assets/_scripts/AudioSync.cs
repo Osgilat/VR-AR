@@ -17,16 +17,25 @@ public class AudioSync : NetworkBehaviour {
 	private AudioSource source;
 
 	// Use this for initialization
-	void Start () {
+	void Start ()
+	{
+		instance = this;
 		source = this.GetComponent<AudioSource> ();
 	}
 
-	public int lastSlideIndex = 0;
+	public static int currentSlideIndex = 0;
 	
 	public void PlayAudioMessageForSlide(int slideNumber)
 	{
-		lastSlideIndex = slideNumber;
+		currentSlideIndex = slideNumber;
 		PlayLocalSound(slideNumber);
+	}
+
+	public static AudioSync instance;
+
+	public string GetLogString()
+	{
+		return currentSlideIndex + ",AudioTime=" + source.time;
 	}
 	
 	private void Update()
@@ -39,7 +48,7 @@ public class AudioSync : NetworkBehaviour {
 			{
 				//PlaySound(0);
 
-				Debug.Log("Right trigger pressed SlideIndex=" + lastSlideIndex + ",AudioTime=" + source.time);
+				Debug.Log("Right trigger pressed SlideIndex=" + currentSlideIndex + ",AudioTime=" + source.time);
 
 				return;
 			}
@@ -48,7 +57,7 @@ public class AudioSync : NetworkBehaviour {
 			{
 				//PlaySound(1);
 				
-				Debug.Log("Left trigger pressed SlideIndex=" + lastSlideIndex + ",AudioTime=" + source.time);
+				Debug.Log("Left trigger pressed SlideIndex=" + currentSlideIndex + ",AudioTime=" + source.time);
 
 				return;
 			}

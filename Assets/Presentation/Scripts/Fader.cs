@@ -20,12 +20,15 @@ public class Fader : NetworkBehaviour
 
     public GameObject nextSlideButton;
     public GameObject previousSlideButton;
+
+    public Sprite[] mySlides;
     
     // Use this for initialization
     void Start()
     {
         sprites.Clear();
-        Sprite[] spriteList = Resources.LoadAll<Sprite>("sprites");
+        //Sprite[] spriteList = Resources.LoadAll<Sprite>("sprites");
+        Sprite[] spriteList = mySlides;
         Debug.Log("Sprite list : " + spriteList.Count());
         for (int i = 0; i < spriteList.Length; i++)
         {
