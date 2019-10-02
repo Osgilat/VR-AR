@@ -169,10 +169,31 @@ public class SetupLocalPlayer : NetworkBehaviour
 
     public int lastPickedEmotionIndexImitation = -1;
     public int lastPickedEmotionIndexAi = -1;
-    
+
+    public UDPObj udp = null;
+
+    public void SendUdpData()
+    {
+        if (udp == null)
+        {
+            udp = GameObject.FindWithTag("UDP").GetComponent<UDPObj>();
+        }
+        else
+        {
+            string s = string.Join(":", myVector.values);
+            udp.SendData(s);
+        }
+    }
+
+    private void FixedUpdate()
+    {
+        SendUdpData();
+    }
+
     public void MasksImitationLoop()
     {
         if (!imitatedMesh.gameObject.activeInHierarchy) return;
+
         
         
         for (int i = 0; i < expressions.Count; i++)
@@ -204,7 +225,7 @@ public class SetupLocalPlayer : NetworkBehaviour
             lastPickedEmotionIndexAi = pickedEmotionIndex;
             aiAnimator.SetTrigger(animatorTriggersList[pickedEmotionIndex]);
         }
-        
+
         
     }
     
