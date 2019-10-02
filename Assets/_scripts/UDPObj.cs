@@ -92,12 +92,14 @@ public class UDPObj : MonoBehaviour
 	private  void ReceiveData ()
 	{
 		while (true) {
+		
 
 			try {
 				IPEndPoint anyIP = new IPEndPoint (IPAddress.Any, 0);
 				byte[] data = client.Receive (ref anyIP);
 				string text = Encoding.UTF8.GetString (data);
-				print (">> " + text);
+				SetupLocalPlayer.localArkitInstance.ReceiveData(text);
+				//print (">> " + text);
 				lastReceivedUDPPacket = text;
 				allReceivedUDPPackets = allReceivedUDPPackets + text;
 

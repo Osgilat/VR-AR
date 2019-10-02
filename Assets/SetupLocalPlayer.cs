@@ -19,6 +19,7 @@ public class SetupLocalPlayer : NetworkBehaviour
     public Vector3 offset = new Vector3(0, 0.5f, 0.4f);
 
     public static SetupLocalPlayer localPlayerInstance;
+    public static SetupLocalPlayer localArkitInstance;
     
     public override void OnStartLocalPlayer()
     {
@@ -53,6 +54,7 @@ public class SetupLocalPlayer : NetworkBehaviour
         
         if (Application.isMobilePlatform && isLocalPlayer || !Application.isMobilePlatform && !isLocalPlayer)
         {
+            localArkitInstance = this;
             arkitPart.SetActive(true);
         }
         else 
@@ -72,17 +74,16 @@ public class SetupLocalPlayer : NetworkBehaviour
             
         }
         
-        if (isLocalPlayer && Application.isMobilePlatform
-            )
+        if (isLocalPlayer && Application.isMobilePlatform)
         {
-            Debug.Log("LOCAL PLAYER SPAWNED");
+            //Debug.Log("LOCAL PLAYER SPAWNED");
             UnityARFaceAnchorManager.instance.anchorPrefab = gameObject;
             blendshapeDriver.enabled = true;
             InvokeRepeating("UpdateBlendshapes",5, 0.05f);
         }
         else
         {
-            Debug.Log("NOT LOCAL PLAYER SPAWNED");
+            //Debug.Log("NOT LOCAL PLAYER SPAWNED");
             blendshapeDriver.enabled = false;
         }
         
@@ -94,10 +95,23 @@ public class SetupLocalPlayer : NetworkBehaviour
         myVector = gameObject.AddComponent<VectorN>();
         myVector.values = new float[52];
         
-        InvokeRepeating("MasksImitationLoop", 1.0f, 1.0f);
+        InvokeRepeating("MasksImitationLoop", 1.0f, 0.1f);
     }
 
-    
+    public void ReceiveData(string text)
+    {
+        string[] str = text.Split(':');
+        float[] receivedBlendshapes = new float[str.Length];
+        for (int i = 0; i < str.Length; i++)
+        {
+            receivedBlendshapes[i] = float.Parse(str[i]);
+        }
+        
+        for (int i = 0; i < 52; i++)
+        {
+            imitatedMesh.SetBlendShapeWeight(i, receivedBlendshapes[i]) ;
+        }
+    }
     
     public VectorN myVector;
     
@@ -114,15 +128,6 @@ public class SetupLocalPlayer : NetworkBehaviour
     public class ExpressionProbability
     {
         public float[] probabilityArray = new float[8];
-        
-        /*
-        public float angry;
-        public float fear;
-        public float sad;
-        public float bored;
-        public float happy;
-        public float exited;
-        */
     }
 
     public List<string> animatorTriggersList = new List<string>();
@@ -174,28 +179,33 @@ public class SetupLocalPlayer : NetworkBehaviour
 
     public void SendUdpData()
     {
+        if (!arkitPart.activeInHierarchy)
+        {
+            return;
+        }
+        
         if (udp == null)
         {
             udp = GameObject.FindWithTag("UDP").GetComponent<UDPObj>();
         }
         else
         {
-            string s = string.Join(":", myVector.values);
+            string s = DateTime.Now.ToString("M/d/yyyy") + " "
+                                                         + System.DateTime.Now.ToString("HH:mm:ss") + ":"
+                                                         + System.DateTime.Now.Millisecond + " " + string.Join(":", myVector.values);
             udp.SendData(s);
         }
     }
 
-    private void FixedUpdate()
-    {
-        SendUdpData();
-    }
-
+    
+    
     public void MasksImitationLoop()
     {
+        SendUdpData();
+        
         if (!imitatedMesh.gameObject.activeInHierarchy) return;
-
         
-        
+        /*
         for (int i = 0; i < expressions.Count; i++)
         {
             float normalized = (Mathf.Sqrt(myVector.norme()) * Mathf.Sqrt(expressions[i].norme()));
@@ -226,7 +236,7 @@ public class SetupLocalPlayer : NetworkBehaviour
             aiAnimator.SetTrigger(animatorTriggersList[pickedEmotionIndex]);
         }
 
-        
+        */
     }
     
     public void UpdateBlendshapes()

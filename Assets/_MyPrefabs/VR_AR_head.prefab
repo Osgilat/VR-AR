@@ -1746,6 +1746,7 @@ MonoBehaviour:
   aiAnimator: {fileID: 8733559690670794568}
   lastPickedEmotionIndexImitation: -1
   lastPickedEmotionIndexAi: -1
+  udp: {fileID: 0}
 --- !u!114 &6749169717940568314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2208,7 +2209,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &2137892955033576325
 Transform:
   m_ObjectHideFlags: 0
