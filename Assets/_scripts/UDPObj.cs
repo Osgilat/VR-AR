@@ -18,6 +18,7 @@ using System.Text;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using TMPro;
 
 public class UDPObj : MonoBehaviour
 {
@@ -43,11 +44,15 @@ public class UDPObj : MonoBehaviour
 	public string allReceivedUDPPackets = "";
 	// clear this from time to time!
 
+	public static UDPObj instance;
+	
 	// start from Unity3d
 	public void Start ()
 	{
+		instance = this;
 		DontDestroyOnLoad(gameObject);
-		init ();
+		
+		//init ();
 	}
 
 	// OnGUI
@@ -98,13 +103,11 @@ public class UDPObj : MonoBehaviour
 				IPEndPoint anyIP = new IPEndPoint (IPAddress.Any, 0);
 				byte[] data = client.Receive (ref anyIP);
 				string text = Encoding.UTF8.GetString (data);
-				SetupLocalPlayer.localArkitInstance.ReceiveData(text);
-				//print (">> " + text);
 				lastReceivedUDPPacket = text;
 				allReceivedUDPPackets = allReceivedUDPPackets + text;
 
 			} catch (Exception err) {
-				print (err.ToString ());
+				print (err.Message.ToString() );
 			}
 		}
 	}
@@ -112,9 +115,20 @@ public class UDPObj : MonoBehaviour
 	public bool badSendData = false;
 
 	public string exampleString;
+
+	public bool triggered = false;
 	
 	private void Update()
 	{
+		if (!triggered && AudioSync.currentSlideIndex > 0)
+		{
+			triggered = true;
+			
+			IP = GameObject.FindGameObjectWithTag("UDPtext").GetComponent<TMP_InputField>().text;
+			init();
+		}
+		
+		
 		if (badSendData)
 		{
 			badSendData = false;

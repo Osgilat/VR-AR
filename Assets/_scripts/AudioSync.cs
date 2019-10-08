@@ -33,10 +33,8 @@ public class AudioSync : NetworkBehaviour {
 
 	public static AudioSync instance;
 
-	public string GetLogString()
-	{
-		return currentSlideIndex + ",AudioTime=" + source.time;
-	}
+	public bool leftTriggerPressed;
+	public bool rightTriggerPressed;
 	
 	private void Update()
 	{
@@ -48,7 +46,9 @@ public class AudioSync : NetworkBehaviour {
 			{
 				//PlaySound(0);
 
-				Debug.Log("Right trigger pressed SlideIndex=" + currentSlideIndex + ",AudioTime=" + source.time);
+				//Debug.Log("Right trigger pressed SlideIndex=" + currentSlideIndex + ",AudioTime=" + source.time);
+
+				rightTriggerPressed = true;
 
 				return;
 			}
@@ -57,8 +57,10 @@ public class AudioSync : NetworkBehaviour {
 			{
 				//PlaySound(1);
 				
-				Debug.Log("Left trigger pressed SlideIndex=" + currentSlideIndex + ",AudioTime=" + source.time);
+				//Debug.Log("Left trigger pressed SlideIndex=" + currentSlideIndex + ",AudioTime=" + source.time);
 
+				leftTriggerPressed = false;
+				
 				return;
 			}
 		}

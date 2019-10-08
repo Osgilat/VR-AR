@@ -43,9 +43,11 @@ public class ExpressionLogger : MonoBehaviour
         {
             string stringToLog = i + "=" + blendshapesWeights[i];
 
+            /*
             Debug.Log(DateTime.Now.ToString("M/d/yyyy") + " "
                                                         + System.DateTime.Now.ToString("HH:mm:ss") + ":"
                                                         + System.DateTime.Now.Millisecond + "," + maskType + "," + stringToLog + "," + AudioSync.instance.GetLogString());
+                                                        */
         }
         
     }

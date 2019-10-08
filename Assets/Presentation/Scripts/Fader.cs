@@ -29,7 +29,7 @@ public class Fader : NetworkBehaviour
         sprites.Clear();
         //Sprite[] spriteList = Resources.LoadAll<Sprite>("sprites");
         Sprite[] spriteList = mySlides;
-        Debug.Log("Sprite list : " + spriteList.Count());
+        //Debug.Log("Sprite list : " + spriteList.Count());
         for (int i = 0; i < spriteList.Length; i++)
         {
             if (!sprites.ContainsKey(spriteList[i].name))
@@ -45,10 +45,6 @@ public class Fader : NetworkBehaviour
         rendy1.sprite = sprites[spriteKey];
 
         currentSlide = 0;
-        
-        
-        
-        
     }
 
     [SyncVar(hook = nameof(OnSlideChanged))]
@@ -113,6 +109,9 @@ public class Fader : NetworkBehaviour
     
     void Update()
     {
+        nextSlideButton.SetActive(currentSlide < (sprites.Keys.Count - 1));
+        previousSlideButton.SetActive(currentSlide > 0);
+        /*
         if (Application.isMobilePlatform || badBoolShowInterface)
         {
             nextSlideButton.SetActive(currentSlide < (sprites.Keys.Count - 1));
@@ -137,5 +136,6 @@ public class Fader : NetworkBehaviour
 
             CmdToPreviousSlide();
         }
+        */
     }
 }

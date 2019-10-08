@@ -126,9 +126,11 @@ public class BlendshapeDriver : MonoBehaviour
 			//loggingSystem.writeMessageWithTimestampToLog(currentBlendShapeUIs[blendshapeName] + ",");
 			string stringToLog = kvp.Key + "=" + kvp.Value;
 
+			/*
 			Debug.Log(DateTime.Now.ToString("M/d/yyyy") + " "
 			                                            + System.DateTime.Now.ToString("HH:mm:ss") + ":"
 			                                            + System.DateTime.Now.Millisecond + "," + maskType + "," + stringToLog + "," + AudioSync.instance.GetLogString());
+			                                            */
 		}
 	}
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
@@ -16,7 +17,12 @@ public class UnityFileDebug : MonoBehaviour
 
     System.IO.StreamWriter fileWriter;
 
-    public void Start(){
+    public static UnityFileDebug instance;
+    
+    public void Start()
+    {
+        instance = this;
+        
          string filePath = Application.persistentDataPath + "/testFile.txt";
         StreamWriter sr = File.CreateText (filePath);
         sr.WriteLine ("This is my file.");
@@ -47,6 +53,8 @@ public class UnityFileDebug : MonoBehaviour
         }
     }
 
+   
+    
     public void UpdateFilePath()
     {
         filePath = useAbsolutePath ? absolutePath : Application.persistentDataPath;
