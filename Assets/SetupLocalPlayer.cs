@@ -98,6 +98,8 @@ public class SetupLocalPlayer : NetworkBehaviour
 
         myVector = gameObject.AddComponent<VectorN>();
         myVector.values = new float[52];
+        lastReceivedArray = new float[104];
+        oldReceivedArray = new float[104];
 
         InvokeRepeating("MasksImitationLoop", 1.0f, 0.1f);
     }
@@ -174,16 +176,57 @@ public class SetupLocalPlayer : NetworkBehaviour
     private float[] receivedImitatedVals;
     private float[] receivedAiVals;
 
+
+    public float[] lastReceivedArray = new float[104];
+
+    public float[] oldReceivedArray = new float[104];
+
+    public bool receivedNew;
+
     
+    
+    IEnumerator ChangeValueOverTime(float fromVal, float toVal, float duration, int index)
+    {
+        float counter = 0f;
+
+        while (counter < duration)
+        {
+            if (Time.timeScale == 0)
+                counter += Time.unscaledDeltaTime;
+            else
+                counter += Time.deltaTime;
+
+            
+            float val = Mathf.Lerp(fromVal, toVal, counter / duration);
+            imitatedMesh.SetBlendShapeWeight(index, val);
+            //Debug.Log("Val: " + val);
+            yield return null;
+        }
+    }
+
     public void ReceiveData()
     {
         receivedArray = UDPObj.instance.getLatestUDPPacket().Split(':');
+        
+        
 
         if (receivedArray.Length < 104)
         {
             return;
         }
+
        
+        StopAllCoroutines();
+        
+        for (int i = 0; i < 52; i++)
+        {
+            lastReceivedArray[i] = 
+                float.Parse(receivedArray[i].Replace(".", ","));
+            StartCoroutine(ChangeValueOverTime(oldReceivedArray[i], lastReceivedArray[i], 0.2f, i));
+        }
+
+        oldReceivedArray = lastReceivedArray;
+        /*
         for (int i = 0; i < 52; i++)
         {
             if (string.IsNullOrEmpty(receivedArray[i]))
@@ -203,6 +246,7 @@ public class SetupLocalPlayer : NetworkBehaviour
             
             aiMesh.SetBlendShapeWeight(i - 53, float.Parse(receivedArray[i].Replace(".", ",")));
         }
+        */
     }
     
     public void SendUdpData()
